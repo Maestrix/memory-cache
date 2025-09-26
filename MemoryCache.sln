@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemoryCache.Parser", "MemoryCache.Parser\MemoryCache.Parser.csproj", "{5223CF21-5401-4CDF-AA25-5C6F08992B2D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsole", "TestConsole\TestConsole.csproj", "{1B5CDDF8-7F18-4B7F-B4D0-D244944C2FDA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemoryCache.Storage", "MemoryCache.Storage\MemoryCache.Storage.csproj", "{1090B792-D0AD-481C-B251-355AD01462E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemoryCache.Tests", "MemoryCache.Tests\MemoryCache.Tests.csproj", "{666020AA-1B12-4713-A3C6-08F74A4B06C8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5223CF21-5401-4CDF-AA25-5C6F08992B2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5223CF21-5401-4CDF-AA25-5C6F08992B2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5223CF21-5401-4CDF-AA25-5C6F08992B2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5223CF21-5401-4CDF-AA25-5C6F08992B2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B5CDDF8-7F18-4B7F-B4D0-D244944C2FDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B5CDDF8-7F18-4B7F-B4D0-D244944C2FDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B5CDDF8-7F18-4B7F-B4D0-D244944C2FDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B5CDDF8-7F18-4B7F-B4D0-D244944C2FDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1090B792-D0AD-481C-B251-355AD01462E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1090B792-D0AD-481C-B251-355AD01462E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1090B792-D0AD-481C-B251-355AD01462E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1090B792-D0AD-481C-B251-355AD01462E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{666020AA-1B12-4713-A3C6-08F74A4B06C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{666020AA-1B12-4713-A3C6-08F74A4B06C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{666020AA-1B12-4713-A3C6-08F74A4B06C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{666020AA-1B12-4713-A3C6-08F74A4B06C8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
