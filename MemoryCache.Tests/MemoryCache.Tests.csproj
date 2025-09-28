@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../MemoryCache.Parser/MemoryCache.Parser.csproj" />
+    <ProjectReference Include="../MemoryCache/MemoryCache.csproj" />
   </ItemGroup>
 
   <ItemGroup>

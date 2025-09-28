@@ -1,8 +1,6 @@
-﻿
-using MemoryCache.Parser;
+﻿using MemoryCache.Tcp;
 
-var result = CommandParser.Parse("SET  key  ");
+TcpServer tcpServer = new();
+await tcpServer.StartAsync();
 
-Console.WriteLine($"Command = '{result.Command.ToString()}'");
-Console.WriteLine($"Key = '{result.Key.ToString()}'");
-Console.WriteLine($"Value = '{result.Value.ToString()}'");
+Console.ReadLine();

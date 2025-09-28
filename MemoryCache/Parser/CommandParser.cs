@@ -2,20 +2,20 @@
 
 public static class CommandParser
 {
-    public static CommandParseResult Parse(ReadOnlySpan<char> values)
+    public static CommandParseResult Parse(ReadOnlyMemory<char> values)
     {
         CommandParseResult result = new();
 
-        int index = values.IndexOf(' ');
+        int index = values.Span.IndexOf(' ');
 
         if (index < 0)
             return result;
 
-        ReadOnlySpan<char> command = values.Slice(0, index);
+        ReadOnlyMemory<char> command = values.Slice(0, index);
 
         values = values[(index + 1)..];
 
-        index = values.IndexOf(' ');
+        index = values.Span.IndexOf(' ');
 
         if (index < 0 && values.IsEmpty == false)
         {

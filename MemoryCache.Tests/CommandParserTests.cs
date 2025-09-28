@@ -12,7 +12,7 @@ public class CommandParserTests
         string input = "SET key1 data1 data2";
 
         //act
-        CommandParseResult result = CommandParser.Parse(input);
+        CommandParseResult result = CommandParser.Parse(input.AsMemory());
 
         //assert
         result.Command.IsEmpty.ShouldBeFalse();
@@ -26,7 +26,7 @@ public class CommandParserTests
     public void String_contains_command_and_key(string input)
     {
         //act
-        CommandParseResult result = CommandParser.Parse(input);
+        CommandParseResult result = CommandParser.Parse(input.AsMemory());
 
         //assert
         result.Command.IsEmpty.ShouldBeFalse();
@@ -42,7 +42,7 @@ public class CommandParserTests
     public void String_not_contains_key_or_command_or_value(string input)
     {
         //act
-        CommandParseResult result = CommandParser.Parse(input);
+        CommandParseResult result = CommandParser.Parse(input.AsMemory());
 
         //assert
         result.Command.IsEmpty.ShouldBeTrue();
