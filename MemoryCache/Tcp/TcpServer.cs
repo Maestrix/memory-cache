@@ -8,40 +8,45 @@ namespace MemoryCache.Tcp;
 
 public class TcpServer
 {
-    public async Task StartAsync()
-    {
-        int port = 8080;
-        IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
-        IPEndPoint endPoint = new(ipAddress, 8080);
+    private readonly IPEndPoint _endPoint;
 
-        Socket socket = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        socket.Bind(endPoint);
+    public TcpServer(string ip, int port)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(ip);
+        
+        _endPoint = new(IPAddress.Parse(ip), port);
+    }
+
+    public async Task StartAsync(CancellationToken token)
+    {
+        using Socket socket = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        socket.Bind(_endPoint);
         socket.Listen(10);
 
-        Console.WriteLine($"Сервер запущен на {ipAddress}:{port}");
+        Console.WriteLine($"Сервер запущен на {_endPoint.Address}:{_endPoint.Port}");
 
         while (true)
         {
-            Socket clientSocket = await socket.AcceptAsync();
+            Socket clientSocket = await socket.AcceptAsync(token);
 
-            _ = ProcessClientAsync(clientSocket);
+            _ = ProcessClientAsync(clientSocket, token);
         }
     }
 
-    private async Task ProcessClientAsync(Socket clientSocket)
+    private static async Task ProcessClientAsync(Socket clientSocket, CancellationToken token)
     {
         Console.WriteLine($"Подключен клиент {clientSocket.RemoteEndPoint}");
 
         try
         {
-            while (true)
-            {
-                var pool = ArrayPool<byte>.Shared;
-                byte[] buffer = pool.Rent(1024);
+            var pool = ArrayPool<byte>.Shared;
+            byte[] buffer = pool.Rent(1024);
 
-                try
+            try
+            {
+                while (true)
                 {
-                    int bytes = await clientSocket.ReceiveAsync(buffer);
+                    int bytes = await clientSocket.ReceiveAsync(buffer, token);
 
                     if (bytes == 0)
                     {
@@ -58,11 +63,18 @@ public class TcpServer
 
                     Console.WriteLine($"Command = '{result.Command}' | Key = '{result.Key}' | Value = '{result.Value}'");
                 }
-                finally
-                {
-                    pool.Return(buffer, clearArray: false);
-                }
             }
+            finally
+            {
+                pool.Return(buffer, clearArray: false);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"""
+            Ошибка обработки клиента {clientSocket.RemoteEndPoint}.
+            Описание: {ex.Message}
+            """);
         }
         finally
         {
