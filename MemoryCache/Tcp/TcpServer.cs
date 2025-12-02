@@ -3,18 +3,30 @@ using System.Net.Sockets;
 using System.Text;
 using System.Buffers;
 using MemoryCache.Parser;
+using MemoryCache.Storage;
 
 namespace MemoryCache.Tcp;
 
 public class TcpServer
 {
-    private readonly IPEndPoint _endPoint;
+    private const string GetCommand = "GET";
+    private const string SetCommand = "SET";
+    private const string DeleteCommand = "DEL";
 
-    public TcpServer(string ip, int port)
+    private readonly byte[] _successResult = Encoding.UTF8.GetBytes("OK\r\n");
+    private readonly byte[] _unknownCommandResult = Encoding.UTF8.GetBytes("-ERR Unknown command\r\n");
+    private readonly byte[] _notFoundResult = Encoding.UTF8.GetBytes("(nil)\r\n");
+
+    private readonly IPEndPoint _endPoint;
+    private readonly IStorage _storage;
+
+    public TcpServer(string ip, int port, IStorage storage)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(ip);
-        
+        ArgumentNullException.ThrowIfNull(storage);
+
         _endPoint = new(IPAddress.Parse(ip), port);
+        _storage = storage;
     }
 
     public async Task StartAsync(CancellationToken token)
@@ -33,7 +45,7 @@ public class TcpServer
         }
     }
 
-    private static async Task ProcessClientAsync(Socket clientSocket, CancellationToken token)
+    private async Task ProcessClientAsync(Socket clientSocket, CancellationToken token)
     {
         Console.WriteLine($"Подключен клиент {clientSocket.RemoteEndPoint}");
 
@@ -59,9 +71,33 @@ public class TcpServer
                     var last = receivedString.Last();
                     var length = last == '\n' ? receivedString.Length - 1 : receivedString.Length;
 
-                    CommandParseResult result = CommandParser.Parse(receivedString.AsMemory(0, length));
+                    CommandParseResult parseResult = CommandParser.Parse(receivedString.AsMemory(0, length));
 
-                    Console.WriteLine($"Command = '{result.Command}' | Key = '{result.Key}' | Value = '{result.Value}'");
+                    switch (parseResult.Command.Span)
+                    {
+                        case SetCommand:
+                            _storage.Set(parseResult.Key.ToString(), Encoding.UTF8.GetBytes(parseResult.Value.ToArray()));
+                            await clientSocket.SendAsync(_successResult, token);
+                            break;
+                        case DeleteCommand:
+                            _storage.Delete(parseResult.Key.ToString());
+                            await clientSocket.SendAsync(_successResult, token);
+                            break;
+                        case GetCommand:
+                            byte[]? value = _storage.Get(parseResult.Key.ToString());
+                            if (value is null)
+                            {
+                                await clientSocket.SendAsync(_notFoundResult, token);
+                            }
+                            else
+                            {
+                                await clientSocket.SendAsync(value, token);
+                            }
+                            break;
+                        default:
+                            await clientSocket.SendAsync(_unknownCommandResult, token);
+                            break;
+                    }
                 }
             }
             finally
