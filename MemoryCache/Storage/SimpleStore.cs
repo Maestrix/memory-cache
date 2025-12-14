@@ -1,4 +1,6 @@
-﻿namespace MemoryCache.Storage;
+﻿using MemoryCache.Models;
+
+namespace MemoryCache.Storage;
 
 public sealed class SimpleStore : IStorage, IDisposable
 {
@@ -17,13 +19,13 @@ public sealed class SimpleStore : IStorage, IDisposable
         return (_setCount, _getCount, _deleteCount);
     }
 
-    public void Set(string key, byte[] value)
+    public void Set(string key, UserProfile? value)
     {
         _lock.EnterWriteLock();
 
         try
         {
-            _storage[key] = value;
+            _storage[key] = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(value);
 
             Interlocked.Increment(ref _setCount);
         }
@@ -33,14 +35,15 @@ public sealed class SimpleStore : IStorage, IDisposable
         }
     }
 
-    public byte[]? Get(string key)
+    public UserProfile? Get(string key)
     {
         _lock.EnterReadLock();
 
         try
         {
             Interlocked.Increment(ref _getCount);
-            return _storage.GetValueOrDefault(key);
+            var bytes = _storage.GetValueOrDefault(key);
+            return bytes is null ? default : System.Text.Json.JsonSerializer.Deserialize<UserProfile>(bytes);
         }
         finally
         {

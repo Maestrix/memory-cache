@@ -1,10 +1,7 @@
-using System;
 using System.Buffers;
-using System.Buffers.Binary;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using LoadTester.Models;
 
 namespace LoadTester;
 
@@ -24,8 +21,10 @@ public class SimpleTcpClient(string host, int port) : IDisposable
         _stream = _client.GetStream();
     }
 
-    public async Task<bool> SetAsync(string key, byte[] value, CancellationToken token)
+    public async Task<bool> SetAsync(string key, UserProfile value, CancellationToken token)
     {
+        byte[] valueBytes = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(value);
+
         if (!_client.Connected || _stream == null)
             throw new InvalidOperationException("Соединение не установлено");
 
@@ -33,7 +32,7 @@ public class SimpleTcpClient(string host, int port) : IDisposable
         byte[] spaceSeparator = Encoding.UTF8.GetBytes(" ");
         byte[] keyBytes = Encoding.UTF8.GetBytes(key);
 
-        byte[] message = new byte[commandBytes.Length + spaceSeparator.Length + keyBytes.Length + spaceSeparator.Length + value.Length];
+        byte[] message = new byte[commandBytes.Length + spaceSeparator.Length + keyBytes.Length + spaceSeparator.Length + valueBytes.Length];
 
         int offset = 0;
 
@@ -49,7 +48,7 @@ public class SimpleTcpClient(string host, int port) : IDisposable
         Buffer.BlockCopy(spaceSeparator, 0, message, offset, spaceSeparator.Length);
         offset += spaceSeparator.Length;
 
-        Buffer.BlockCopy(value, 0, message, offset, value.Length);
+        Buffer.BlockCopy(valueBytes, 0, message, offset, valueBytes.Length);
 
         var arrayPool = ArrayPool<byte>.Shared;
         byte[] buffer = arrayPool.Rent(10);

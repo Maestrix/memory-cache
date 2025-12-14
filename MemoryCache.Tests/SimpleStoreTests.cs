@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using MemoryCache.Models;
 using MemoryCache.Storage;
 using Shouldly;
 
@@ -18,7 +19,15 @@ public class SimpleStoreTests
 
         for (int i = 0; i < operationCount; i++)
         {
-            tasks.Add(Task.Run(() => store.Set($"key{i}", Encoding.UTF8.GetBytes($"value number of {i}"))));
+            var userProfile = new UserProfile
+            {
+                Id = i + 1,
+                UserName = "Иван Петров",
+                CreatedAt = DateTime.UtcNow.AddHours(3),
+                IsWorker = true
+            };
+            
+            tasks.Add(Task.Run(() => store.Set($"key{i}", userProfile)));
             tasks.Add(Task.Run(() => store.Get($"key{i}")));
         }
 
