@@ -4,6 +4,7 @@ using System.Text;
 using System.Buffers;
 using MemoryCache.Parser;
 using MemoryCache.Storage;
+using MemoryCache.Models;
 
 namespace MemoryCache.Tcp;
 
@@ -76,7 +77,8 @@ public class TcpServer
                     switch (parseResult.Command.Span)
                     {
                         case SetCommand:
-                            _storage.Set(parseResult.Key.ToString(), Encoding.UTF8.GetBytes(parseResult.Value.ToArray()));
+                            UserProfile? userProfile = System.Text.Json.JsonSerializer.Deserialize<UserProfile>(parseResult.Value.Span);
+                            _storage.Set(parseResult.Key.ToString(), userProfile);
                             await clientSocket.SendAsync(_successResult, token);
                             break;
                         case DeleteCommand:
@@ -84,14 +86,14 @@ public class TcpServer
                             await clientSocket.SendAsync(_successResult, token);
                             break;
                         case GetCommand:
-                            byte[]? value = _storage.Get(parseResult.Key.ToString());
+                            UserProfile? value = _storage.Get(parseResult.Key.ToString());
                             if (value is null)
                             {
                                 await clientSocket.SendAsync(_notFoundResult, token);
                             }
                             else
                             {
-                                await clientSocket.SendAsync(value, token);
+                                await clientSocket.SendAsync(System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(value), token);
                             }
                             break;
                         default:

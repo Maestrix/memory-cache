@@ -1,3 +1,5 @@
+using MemoryCache.Models;
+
 namespace MemoryCache.Storage;
 
 public interface IStorage
@@ -7,14 +9,14 @@ public interface IStorage
     /// </summary>
     /// <param name="key">ключ</param>
     /// <param name="value">значение</param>
-    void Set(string key, byte[] value);
+    void Set(string key, UserProfile? value);
 
     /// <summary>
     /// Возвращает значение по ключу или null, если ключ не найден
     /// </summary>
     /// <param name="key">ключ</param>
     /// <returns>Найденное значение</returns>
-    byte[]? Get(string key);
+    UserProfile? Get(string key);
 
     /// <summary>
     /// удаляет ключ и значение

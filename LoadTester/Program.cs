@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using LoadTester;
+using LoadTester.Models;
 using NBomber.CSharp;
 
 var scenario = Scenario.Create("tcp_load_test", async context =>
@@ -15,7 +16,15 @@ var scenario = Scenario.Create("tcp_load_test", async context =>
         var randomValue = new byte[context.Random.Next(10, 100)];
         context.Random.NextBytes(randomValue);
 
-        bool isSuccess = await client.SetAsync("key1", Encoding.UTF8.GetBytes("test1 test1"), sourceToken.Token);
+        var userProfile = new UserProfile
+        {
+            Id = context.Random.Next(),
+            UserName = "Иван Петров",
+            CreatedAt = DateTime.UtcNow.AddHours(3),
+            IsWorker = true
+        };
+
+        bool isSuccess = await client.SetAsync("key1", userProfile, sourceToken.Token);
 
         return isSuccess ? Response.Ok() : Response.Fail();
     });
@@ -31,12 +40,21 @@ var scenario = Scenario.Create("tcp_load_test", async context =>
 NBomberRunner.RegisterScenarios(scenario).Run();
 
 /*
+
 var sourceToken = new CancellationTokenSource();
 
 using SimpleTcpClient client = new("127.0.0.1", 8080);
 await client.ConnectAsync(sourceToken.Token);
 
-bool isSuccess = await client.SetAsync("key1", Encoding.UTF8.GetBytes("test1 test1"), sourceToken.Token);
+var userProfile = new UserProfile
+{
+    Id = 1234,
+    UserName = "Иван Петров",
+    CreatedAt = DateTime.UtcNow.AddHours(3),
+    IsWorker = true
+};
+
+bool isSuccess = await client.SetAsync("key1", userProfile, sourceToken.Token);
 
 if (isSuccess)
 {
@@ -50,4 +68,5 @@ else
 }
 
 Console.WriteLine("END");
+
 */
