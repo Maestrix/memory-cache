@@ -6,4 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="../Serializator/Serializator.csproj" 
+      OutputItemType="Analyzer"
+			ReferenceOutputAssembly="true" />
+  </ItemGroup>
+
 </Project>

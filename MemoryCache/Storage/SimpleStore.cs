@@ -25,7 +25,9 @@ public sealed class SimpleStore : IStorage, IDisposable
 
         try
         {
-            _storage[key] = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(value);
+            using var ms = new MemoryStream();
+            value?.SerializeToBinary(ms);
+            _storage[key] = ms.ToArray();
 
             Interlocked.Increment(ref _setCount);
         }
