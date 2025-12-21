@@ -3,6 +3,9 @@ using LoadTester;
 using LoadTester.Models;
 using NBomber.CSharp;
 
+BenchmarkDotNet.Running.BenchmarkRunner.Run<SerializationBenchmarks>();
+
+/*
 var scenario = Scenario.Create("tcp_load_test", async context =>
 {
     var step1 = await Step.Run("tcp_set_step", context, async () =>
@@ -38,6 +41,7 @@ var scenario = Scenario.Create("tcp_load_test", async context =>
 );
 
 NBomberRunner.RegisterScenarios(scenario).Run();
+*/
 
 /*
 

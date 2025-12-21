@@ -9,6 +9,13 @@
 
   <ItemGroup>
     <PackageReference Include="NBomber" Version="6.1.2" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Serializator/Serializator.csproj" 
+      OutputItemType="Analyzer"
+			ReferenceOutputAssembly="true" />
   </ItemGroup>
 
 </Project>
