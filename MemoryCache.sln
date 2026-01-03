@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemoryCache", "MemoryCache\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadTester", "LoadTester\LoadTester.csproj", "{B591752A-1ABE-40B6-B8AE-83BCA1534E77}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serializator", "Serializator\Serializator.csproj", "{98D911A8-2D67-43C9-A632-F9CED171F989}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{B591752A-1ABE-40B6-B8AE-83BCA1534E77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B591752A-1ABE-40B6-B8AE-83BCA1534E77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B591752A-1ABE-40B6-B8AE-83BCA1534E77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98D911A8-2D67-43C9-A632-F9CED171F989}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98D911A8-2D67-43C9-A632-F9CED171F989}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98D911A8-2D67-43C9-A632-F9CED171F989}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98D911A8-2D67-43C9-A632-F9CED171F989}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
