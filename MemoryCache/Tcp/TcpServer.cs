@@ -23,6 +23,8 @@ public class TcpServer
     private readonly IPEndPoint _endPoint;
     private readonly IStorage _storage;
 
+    private readonly SemaphoreSlim _semaphore;
+
     public TcpServer(string ip, int port, IStorage storage)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(ip);
@@ -30,6 +32,8 @@ public class TcpServer
 
         _endPoint = new(IPAddress.Parse(ip), port);
         _storage = storage;
+
+        _semaphore = new SemaphoreSlim(10);
     }
 
     public async Task StartAsync(CancellationToken token)
@@ -43,6 +47,8 @@ public class TcpServer
         while (true)
         {
             Socket clientSocket = await socket.AcceptAsync(token);
+
+            await _semaphore.WaitAsync();
 
             _ = ProcessClientAsync(clientSocket, token);
         }
@@ -131,6 +137,7 @@ public class TcpServer
             clientSocket.Shutdown(SocketShutdown.Both);
             clientSocket.Close();
             clientSocket.Dispose();
+            _semaphore.Release();
         }
     }
 }
