@@ -14,6 +14,8 @@ public class TcpServer
     private const string SetCommand = "SET";
     private const string DeleteCommand = "DEL";
 
+    private const int MAX_MESSAGE_SIZE = 4 * 1024; // 4 КБ
+
     private readonly byte[] _successResult = Encoding.UTF8.GetBytes("OK\r\n");
     private readonly byte[] _unknownCommandResult = Encoding.UTF8.GetBytes("-ERR Unknown command\r\n");
     private readonly byte[] _notFoundResult = Encoding.UTF8.GetBytes("(nil)\r\n");
@@ -53,6 +55,7 @@ public class TcpServer
         try
         {
             var pool = ArrayPool<byte>.Shared;
+            int totalBytesRead = 0;
             byte[] buffer = pool.Rent(1024);
 
             try
@@ -64,6 +67,15 @@ public class TcpServer
                     if (bytes == 0)
                     {
                         Console.WriteLine($"Клиент {clientSocket.RemoteEndPoint} отключился");
+                        break;
+                    }
+
+                    totalBytesRead += bytes;
+
+                    // Проверка на превышение лимита
+                    if (totalBytesRead > MAX_MESSAGE_SIZE)
+                    {
+                        Console.WriteLine("Превышен лимит размера сообщения. Разрываем соединение.");
                         break;
                     }
 
